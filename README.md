@@ -16,7 +16,7 @@ ruby count.rb /home/choltz/src/webapp/app rb
 The 20 most used symbols in the given folder will be displayed. For example:
 
 ```
-> ruby count.rb /home/choltz/src/webapp/app rb
+> ruby count.rb /home/web/source/app rb
 
 "_" - 28674
 "#" - 15682
