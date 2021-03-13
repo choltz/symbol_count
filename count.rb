@@ -1,14 +1,14 @@
-require 'byebug'
-
 class Count
+  MAX_OUTPUT = 20
+
   def self.start(path, type)
-    function = ->(){ path }    >>
-               files_in_path(type)     >>
-               map(&char_data) >>
+    function = ->(){ path }        >>
+               files_in_path(type) >>
+               map(&char_data)     >>
                aggregate
 
-    function.call.each do |key, count|
-      puts "\"#{key} - #{count}"
+    function.call[0, MAX_OUTPUT].each do |key, count|
+      puts "\"#{key}\" - #{count}"
     end
   end
 
