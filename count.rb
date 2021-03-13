@@ -1,47 +1,79 @@
-class Count
+# Public: Count all symbols in the given path for a file type.
+module Count
   MAX_OUTPUT = 20
 
+  # Public: Begin processing the pipeline.
+  #
+  # path - Folder path to evaluate.
+  # type - Filter on this file type.
   def self.start(path, type)
-    function = ->(){ path }        >>
-               files_in_path(type) >>
-               map(&char_data)     >>
-               aggregate
+    # Create a functional composition pipeline to process the given path into
+    # a result set.
+    pipeline = -> { path }                     >>
+               Private.files_in_path(type)     >>
+               Private.map(&Private.char_data) >>
+               Private.aggregate
 
-    function.call[0, MAX_OUTPUT].each do |key, count|
+    pipeline.call[0, MAX_OUTPUT].each do |key, count|
       puts "\"#{key}\" - #{count}"
     end
   end
 
-  def self.aggregate
-    ->(array) do
-      array.flatten
-           .group_by { |c| c }
-           .map { |c, instances| [c, instances.length] }
-           .sort { |a, b| b[1] <=> a[1] }
-    end
-  end
-
-  def self.files_in_path(type)
-    ->(path) do
-      Dir.glob("#{path}/**/*.#{type}").to_a
-    end
-  end
-
-  def self.map(&block)
-    ->(array) do
-      array.map(&block)
-    end
-  end
-
-  def self.char_data
-    ->(path) do
-      results = []
-      File.open(path, 'r') do |file|
-        results = file.read.split(//)
-                      .reject{|c| c =~ /[a-zA-Z0-9]/ }
-                      .reject{|c| c =~ /[ \n\.:]/ }
+  # Since this is not a class file, an inner module is used to establish a sense
+  # of private vs public scope.
+  module Private
+    # Internal: Combine symbole counts from all files and sort by frequency.
+    #
+    # Returns a Lambda.
+    #   array - array of symbol data to combine.
+    #
+    #   Retrns an array of combined data.
+    def self.aggregate
+      ->(array) do
+        array.flatten
+             .group_by { |c| c }
+             .map { |c, instances| [c, instances.length] }
+             .sort { |a, b| b[1] <=> a[1] }
       end
-      results
+    end
+
+    # Internal: Extract character counts from the given file and remove
+    # non-symbols.
+    #
+    # Returns a Lambda.
+    #   path - File path to evaluate.
+    #
+    #   Returns an array of characters.
+    def self.char_data
+      ->(path) do
+        File.open(path, 'r') do |file|
+          file.read.split(//)
+              .reject{|c| c =~ /[a-zA-Z0-9]/ }
+              .reject{|c| c =~ /[ \n\.:]/ }
+        end
+      end
+    end
+
+    # Internal:  Get all files in a path and filter on the given file type.
+    #
+    # type - File type filter. (eg. rb, js, etc.)
+    #
+    # Returns a lambda
+    #   path - File path to evaluate
+    #
+    #   Returns an Array of files.
+    def self.files_in_path(type)
+      ->(path) do
+        Dir.glob("#{path}/**/*.#{type}").to_a
+      end
+    end
+
+    # Internal: To facilitate composition, wrap the standared Array map method
+    # in a Lamba object.
+    def self.map(&block)
+      ->(array) do
+        array.map(&block)
+      end
     end
   end
 end
