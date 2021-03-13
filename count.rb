@@ -14,6 +14,8 @@ module Count
                Private.map(&Private.char_data) >>
                Private.aggregate
 
+    # This could be added to the pipleline above, but it has side-effects, so
+    # for now, it runs after the pipeline is defined.
     pipeline.call[0, MAX_OUTPUT].each do |key, count|
       puts "\"#{key}\" - #{count}"
     end
