@@ -1,7 +1,7 @@
 # symbol count
 This is a simple Ruby script that opens all files of a given type in a folder path, then tallies up all symbols.
 
-This can be used to inform how top arrange a programmable keyboard. Specifically, I have used to update [QMK](https://docs.qmk.fm/) firmware.
+This can be used to inform how to arrange a programmable keyboard. Specifically, I have used to update [QMK](https://docs.qmk.fm/) firmware.
 
 ## Installation
 This program requires the [Ruby](https://www.ruby-lang.org) programming language and is the only dependency. The code uses Ruby's functional composition syntax - be sure to install Ruby 2.6 or later.
