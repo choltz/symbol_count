@@ -49,7 +49,8 @@ module Count
     def self.char_data
       ->(path) do
         File.open(path, 'r') do |file|
-          file.read.split(//)
+          file.read
+              .split(//)
               .reject{|c| c =~ /[a-zA-Z0-9]/ }
               .reject{|c| c =~ /[ \n\.:]/ }
         end
