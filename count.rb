@@ -1,4 +1,12 @@
 # Public: Count all symbols in the given path for a file type.
+#
+# Example: > ruby count.rb /some/source/path rb
+#          "_" - 28674
+#          "#" - 15682
+#          "'" - 12192
+#          "," - 11226
+#          "(" - 9972
+#          ...
 module Count
   MAX_OUTPUT = 20
 
@@ -24,7 +32,7 @@ module Count
   # Since this is not a class file, an inner module is used to establish a sense
   # of private vs public scope.
   module Private
-    # Internal: Combine symbole counts from all files and sort by frequency.
+    # Internal: Combine symbol counts from all files and sort by frequency.
     #
     # Returns a Lambda.
     #   array - array of symbol data to combine.
@@ -34,7 +42,7 @@ module Count
       ->(array) do
         array.flatten
              .group_by { |c| c }
-             .map { |c, instances| [c, instances.length] }
+             .map { |char, instances| [char, instances.length] }
              .sort { |a, b| b[1] <=> a[1] }
       end
     end
@@ -51,8 +59,8 @@ module Count
         File.open(path, 'r') do |file|
           file.read
               .split(//)
-              .reject{|c| c =~ /[a-zA-Z0-9]/ }
-              .reject{|c| c =~ /[ \n\.:]/ }
+              .reject{|char| char =~ /[a-zA-Z0-9]/ }
+              .reject{|char| char =~ /[ \n\.:]/ }
         end
       end
     end
